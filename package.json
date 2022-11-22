@@ -1,0 +1,19 @@
+{
+  "name": "test-project-server",
+  "version": "1.0.0",
+  "description": "This is a backend REST API using nodeJs, expressJs and mongoDb and mongoose for text project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mule-ME/employe-managment-server-side.git"
+  },
+  "author": "Mulualem Eshetu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mule-ME/employe-managment-server-side/issues"
+  },
+  "homepage": "https://github.com/Mule-ME/employe-managment-server-side#readme"
+}
