@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { SECRET } = require("../constants/index");
 const jwt = require("jsonwebtoken");
 
+/**@import @User model */
 const User = require("../models/Users");
 
 /**
@@ -51,7 +52,6 @@ const signUp = asyncHandler(async (req, res) => {
       status: 400,
       success: false,
       message: "Invalid user data",
-      da: req.userData.id,
     });
   }
 });
@@ -138,66 +138,82 @@ const getUsers = asyncHandler(async (req, res) => {
  * @access private
  * @type PATCH
  */
-
 const updateUser = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  // const user = User.findById(id);
-  // // const condition = (await user.isDeleted) === true;
+  const user = await User.findById({ _id: id });
+  const condition = (await user.isDeleted) === true;
+  if (condition) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+  const { name, email, password, dateOfBirth, salary, createdBy, gender } =
+    req.body;
 
-  // console.log(id);
-  // User.findById(id, function (err, docs) {
-  //   if (err) {
-  //     console.log(err);
-  //   } else {
-  //     console.log("Result : ", docs);
-  //   }
-  // });
-  console.log(User.findById(id));
-  // if (condition) {
-  //   req.status(400);
-  //   throw new Error("User not found");
-  // }
-  // const { name, email, password, dateOfBirth, salary, createdBy, gender } =
-  //   req.body;
+  /**@hash password if user changes his password*/
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = password && (await bcrypt.hash(password, salt));
 
-  // /**@hash password if user changes his password*/
-  // let hashPassword;
-  // if (password) {
-  //   const newPassword = password;
-  //   const salt = await bcrypt.genSalt(10);
-  //   return (hashPassword = await bcrypt.hash(newPassword, salt));
-  // }
+  const updateData = {
+    name,
+    email,
+    password: hashPassword,
+    dateOfBirth,
+    salary,
+    createdBy,
+    gender,
+    updatedBy: req.userData.id,
+  };
 
-  // const updatedUser = {
-  //   name,
-  //   email,
-  //   password: hashPassword,
-  //   dateOfBirth,
-  //   salary,
-  //   createdBy,
-  //   gender,
-  //   updatedBy: req.userData.id,
-  // };
-  // const updateUser = await User.findByIdAndUpdate(req.params.id, updatedUser);
-  // res.status(200).json({
-  //   message: "User updated successfully",
-  //   data: updateUser,
-  // });
-  // if (updateUser) {
-  //   res.status(201).json({
-  //     success: true,
-  //     message: "User created successfully",
-  //     data: user,
-  //     pass: hashPassword,
-  //   });
-  // } else {
-  //   res.status(400).json({
-  //     success: false,
-  //     message: "Invalid user data",
-  //   });
-  // }
+  const updatedUser = await User.findByIdAndUpdate(id, updateData);
+  if (updatedUser) {
+    const newData = await User.findById({ _id: id });
+    res.status(201).json({
+      success: true,
+      message: "User updated successfully",
+      data: newData,
+    });
+  } else {
+    res.status(400).json({
+      success: false,
+      message: "Invalid user data",
+    });
+  }
 });
 
+/**
+ * @description Delete user, personally i prefer soft deletion, for real deletion i put the code below this function
+ * @api api/v1/user/update
+ * @access private
+ * @type PATCH
+ */
+const deleteUser = asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  const isDeleted = {
+    isDeleted: true,
+  };
+
+  const user = await User.findById({ _id: id });
+  const condition = (await user.isDeleted) === true;
+
+  if (condition) {
+    req.status(400);
+    throw new Error("User not found");
+  }
+
+  const deletedUser = await User.findByIdAndUpdate(req.params.id, isDeleted);
+  if (deletedUser) {
+    res.status(201).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } else {
+    res.status(400).json({
+      success: false,
+      message: "Invalid user data",
+    });
+  }
+});
+// findByIdAndDelete
 /**@generate JWT*/
 const generateToken = (id) => {
   return jwt.sign({ id }, SECRET, {
@@ -210,4 +226,5 @@ module.exports = {
   login,
   getUsers,
   updateUser,
+  deleteUser,
 };

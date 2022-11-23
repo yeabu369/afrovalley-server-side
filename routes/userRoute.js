@@ -17,6 +17,7 @@ const {
   login,
   getUsers,
   updateUser,
+  deleteUser,
 } = require("../controllers/userController");
 
 /**@all user routes */
@@ -27,8 +28,7 @@ router
   .route("/login")
   .post(AuthenticateValidations, validatorMiddleware, login);
 router.route("/").get(getUsers);
-router
-  .route("/update/:id")
-  .patch(SignUpValidations, validatorMiddleware, updateUser);
+router.route("/update/:id").patch(protect, updateUser);
+router.route("/delete/:id").delete(protect, deleteUser);
 
 module.exports = router;
