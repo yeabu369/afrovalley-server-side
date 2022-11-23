@@ -19,6 +19,7 @@ const signUp = asyncHandler(async (req, res) => {
   const userExist = await User.findOne({ email });
   if (userExist) {
     res.status(409).json({
+      status: 409,
       success: false,
       message: "User already exists",
     });
@@ -47,6 +48,7 @@ const signUp = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400).json({
+      status: 400,
       success: false,
       message: "Invalid user data",
       da: req.userData.id,
@@ -77,6 +79,7 @@ const login = asyncHandler(async (req, res) => {
   };
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
+      status: 200,
       success: true,
       data: userInfo,
       accessToken: generateToken(user._id),
@@ -88,10 +91,45 @@ const login = asyncHandler(async (req, res) => {
   }
   if (!checkPassword) {
     return res.status(401).json({
+      status: 401,
       success: false,
       message: "Incorrect password.",
     });
   }
+});
+
+/**
+ * @description Get user
+ * @api api/v1/user/
+ * @access public
+ * @type GET
+ */
+const getUsers = asyncHandler(async (req, res) => {
+  /**@defining total @page per request, @limit and @search */
+  const page = parseInt(req.query.page) - 1 || 0;
+  const limit = parseInt(req.query.limit) || 5;
+  const search = req.query.search || "";
+
+  const users = await User.find({
+    name: { $regex: search, $options: "i" },
+    isDeleted: false,
+  })
+    .skip(page * limit)
+    .limit(limit);
+
+  /**@counter for total number of @documents */
+  const total = await User.countDocuments({
+    name: { $regex: search, $options: "i" },
+  });
+
+  res.status(200).json({
+    status: 200,
+    data: users,
+    total,
+    success: true,
+    page: page + 1,
+    limit,
+  });
 });
 
 /**
@@ -100,41 +138,51 @@ const login = asyncHandler(async (req, res) => {
  * @access private
  * @type PATCH
  */
+
 const updateUser = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const user = User.findById({ _id: id });
-  const condition = (await user.isDeleted) === true;
+  // const user = User.findById(id);
+  // // const condition = (await user.isDeleted) === true;
 
-  if (condition) {
-    req.status(400);
-    throw new Error("User not found");
-  }
-  const { name, email, password, dateOfBirth, salary, createdBy, gender } =
-    req.body;
+  // console.log(id);
+  // User.findById(id, function (err, docs) {
+  //   if (err) {
+  //     console.log(err);
+  //   } else {
+  //     console.log("Result : ", docs);
+  //   }
+  // });
+  console.log(User.findById(id));
+  // if (condition) {
+  //   req.status(400);
+  //   throw new Error("User not found");
+  // }
+  // const { name, email, password, dateOfBirth, salary, createdBy, gender } =
+  //   req.body;
 
-  /**@hash password if user changes his password*/
-  let hashPassword;
-  if (password) {
-    const newPassword = password;
-    const salt = await bcrypt.genSalt(10);
-    return (hashPassword = await bcrypt.hash(newPassword, salt));
-  }
+  // /**@hash password if user changes his password*/
+  // let hashPassword;
+  // if (password) {
+  //   const newPassword = password;
+  //   const salt = await bcrypt.genSalt(10);
+  //   return (hashPassword = await bcrypt.hash(newPassword, salt));
+  // }
 
-  const updatedUser = {
-    name,
-    email,
-    password: hashPassword,
-    dateOfBirth,
-    salary,
-    createdBy,
-    gender,
-    updatedBy: req.userData.id,
-  };
-  const updateUser = await User.findByIdAndUpdate(req.params.id, updatedUser);
-  res.status(200).json({
-    message: "User updated successfully",
-    data: updateUser,
-  });
+  // const updatedUser = {
+  //   name,
+  //   email,
+  //   password: hashPassword,
+  //   dateOfBirth,
+  //   salary,
+  //   createdBy,
+  //   gender,
+  //   updatedBy: req.userData.id,
+  // };
+  // const updateUser = await User.findByIdAndUpdate(req.params.id, updatedUser);
+  // res.status(200).json({
+  //   message: "User updated successfully",
+  //   data: updateUser,
+  // });
   // if (updateUser) {
   //   res.status(201).json({
   //     success: true,
@@ -160,5 +208,6 @@ const generateToken = (id) => {
 module.exports = {
   signUp,
   login,
+  getUsers,
   updateUser,
 };

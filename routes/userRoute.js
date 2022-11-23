@@ -12,7 +12,12 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 /**@import user CRUD functions from user controller */
-const { signUp, login, updateUser } = require("../controllers/userController");
+const {
+  signUp,
+  login,
+  getUsers,
+  updateUser,
+} = require("../controllers/userController");
 
 /**@all user routes */
 router
@@ -21,6 +26,7 @@ router
 router
   .route("/login")
   .post(AuthenticateValidations, validatorMiddleware, login);
+router.route("/").get(getUsers);
 router
   .route("/update/:id")
   .patch(SignUpValidations, validatorMiddleware, updateUser);
