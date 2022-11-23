@@ -18,10 +18,10 @@ const dateOfBirth = body("dateOfBirth")
 const gender = body("gender").isString().withMessage("Gender is required.");
 const salary = body("salary").isNumeric().withMessage("Salary is required.");
 
-/**@create_employee validation */
+/**@create_user validation */
 const SignUpValidations = [name, email, password, dateOfBirth, gender, salary];
 
-/**@login_employee validation */
+/**@login_user validation */
 const AuthenticateValidations = [email, password];
 
 module.exports = {

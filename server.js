@@ -7,7 +7,6 @@ const { errorHandler } = require("./middleware/errorMiddleware");
 const port = PORT || 5000;
 
 connectDB();
-
 const app = express();
 
 app.use(express.json());
@@ -21,12 +20,8 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
-/**@employee_route */
-app.use(
-  "/api/v1/employees",
-  cors(corsOptions),
-  require("./routes/employeeRoute")
-);
+/**@user_route */
+app.use("/api/v1/user", cors(corsOptions), require("./routes/userRoute"));
 
 /**@error_handler */
 app.use(errorHandler);
