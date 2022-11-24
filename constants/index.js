@@ -4,7 +4,7 @@ require("dotenv").config();
 const APP_NODE_ENV = process.env.NODE_ENV;
 const APP_PORT = process.env.PORT || 5000;
 const APP_MONGO_URI = process.env.MONGO_URI;
-const APP_SECRET = process.env.JWT_SECRET;
+const APP_SECRET = process.env.SECRET;
 
 //export constants
 module.exports = {
