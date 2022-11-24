@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { APP_SECRET } = require("../constants/index");
 const jwt = require("jsonwebtoken");
 
+const SECRET = "thisisthesecretforjwt";
 /**@import @User model */
 const User = require("../models/Users");
 
@@ -246,7 +247,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 /**@generate JWT*/
 const generateToken = (id) => {
-  return jwt.sign({ id }, APP_SECRET, {
+  return jwt.sign({ id }, SECRET, {
     expiresIn: "30d",
   });
 };
