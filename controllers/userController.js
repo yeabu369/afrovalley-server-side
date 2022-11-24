@@ -120,6 +120,7 @@ const getUsers = asyncHandler(async (req, res) => {
   /**@counter for total number of @documents */
   const total = await User.countDocuments({
     name: { $regex: search, $options: "i" },
+    isDeleted: false,
   });
 
   res.status(200).json({
@@ -213,7 +214,36 @@ const deleteUser = asyncHandler(async (req, res) => {
     });
   }
 });
-// findByIdAndDelete
+
+/**@real deletion or user from the database  */
+// const deleteUser = asyncHandler(async (req, res) => {
+//   const id = req.params.id;
+//   const isDeleted = {
+//     isDeleted: true,
+//   };
+
+//   const user = await User.findById({ _id: id });
+//   const condition = (await user.isDeleted) === true;
+
+//   if (condition) {
+//     req.status(400);
+//     throw new Error("User not found");
+//   }
+
+//   const deletedUser = await User.findByIdAndDelete(req.params.id);
+//   if (deletedUser) {
+//     res.status(201).json({
+//       success: true,
+//       message: "User deleted successfully",
+//     });
+//   } else {
+//     res.status(400).json({
+//       success: false,
+//       message: "Invalid user data",
+//     });
+//   }
+// });
+
 /**@generate JWT*/
 const generateToken = (id) => {
   return jwt.sign({ id }, SECRET, {
