@@ -2,7 +2,7 @@ require("dotenv").config();
 
 /**@defining constants from @environment variables */
 const NODE_ENV = process.env.APP_NODE_ENV;
-const PORT = process.env.APP_PORT;
+const PORT = process.env.APP_PORT || 5000;
 const MONGO_URI = process.env.APP_MONGO_URI;
 const SECRET = process.env.APP_JWT_SECRET;
 //export constants
