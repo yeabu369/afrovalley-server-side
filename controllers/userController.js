@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const { SECRET } = require("../constants/index");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 /**@import @User model */
 const User = require("../models/Users");
@@ -100,7 +101,7 @@ const login = asyncHandler(async (req, res) => {
 
 /**@generate JWT*/
 const generateToken = (id) => {
-  return jwt.sign({ id }, SECRET, {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "1d",
   });
 };
