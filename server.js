@@ -25,6 +25,9 @@ app.use("/api/v1/user", cors(corsOptions), require("./routes/userRoute"));
 
 /**@error_handler */
 app.use(errorHandler);
+
+//Installing nodemon as a dependency is not the write way cause it is a dev dependency
+//but i install it as a dependency to track changes on my heroku server
 app.listen(port, () =>
   console.log(`Server started on port ${port}`.cyan.underline)
 );
