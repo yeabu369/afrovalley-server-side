@@ -5,8 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "nodemon server.js",
-    "start": "node server.js"
+    "start": "nodemon server.js",
+    "server": "node server.js"
   },
   "repository": {
     "type": "git",
@@ -15,6 +15,7 @@
   "author": "Mulualem Eshetu",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -22,15 +23,12 @@
     "express": "^4.18.2",
     "express-async-handler": "^1.2.0",
     "express-validator": "^6.9.2",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.4",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^8.5.1"
+    "nodemon": "^2.0.20"
   },
   "bugs": {
     "url": "https://github.com/Mule-ME/employe-managment-server-side/issues"
   },
-  "homepage": "https://github.com/Mule-ME/employe-managment-server-side#readme",
-  "devDependencies": {
-    "nodemon": "^2.0.20"
-  }
+  "homepage": "https://github.com/Mule-ME/employe-managment-server-side#readme"
 }
