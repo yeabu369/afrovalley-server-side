@@ -3,9 +3,7 @@ const { MONGO_URI } = require("../constants/index");
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(
-      "mongodb+srv://Mulualem15:mongodbPassword@testprojectcluster.6zoalck.mongodb.net/employee_managment?retryWrites=true&w=majority"
-    );
+    const conn = await mongoose.connect(MONGO_URI);
     console.log(
       `MongoDB Connected to ${conn.connection.host}`.magenta.underline
     );
