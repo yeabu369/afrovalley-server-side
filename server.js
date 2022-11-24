@@ -1,10 +1,10 @@
 const express = require("express");
 const colors = require("colors");
 const cors = require("cors");
-const { PORT } = require("./constants/index");
+const { APP_PORT } = require("./constants/index");
 const { connectDB } = require("./config/db.config");
 const { errorHandler } = require("./middleware/errorMiddleware");
-const port = PORT || 5000;
+const port = APP_PORT;
 
 connectDB();
 const app = express();
