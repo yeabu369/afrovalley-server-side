@@ -98,6 +98,13 @@ const login = asyncHandler(async (req, res) => {
   }
 });
 
+/**@generate JWT*/
+const generateToken = (id) => {
+  return jwt.sign({ id }, SECRET, {
+    expiresIn: "1d",
+  });
+};
+
 /**
  * @description Get user
  * @api api/v1/user/
@@ -243,13 +250,6 @@ const deleteUser = asyncHandler(async (req, res) => {
 //     });
 //   }
 // });
-
-/**@generate JWT*/
-const generateToken = (id) => {
-  return jwt.sign({ id }, SECRET, {
-    expiresIn: "30d",
-  });
-};
 
 module.exports = {
   signUp,
