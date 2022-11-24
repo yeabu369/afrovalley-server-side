@@ -8,7 +8,7 @@ const SECRET = process.env.APP_JWT_SECRET;
 //export constants
 module.exports = {
   NODE_ENV,
-  PORT,
+  APP_PORT,
   MONGO_URI,
   SECRET,
 };
