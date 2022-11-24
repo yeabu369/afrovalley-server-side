@@ -1,4 +1,4 @@
-const { NODE_ENV } = require("../constants/index");
+const { APP_NODE_ENV } = require("../constants/index");
 
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode ? res.statusCode : 500;
@@ -7,7 +7,7 @@ const errorHandler = (err, req, res, next) => {
   res.status(statusCode);
   res.json({
     err: err.message,
-    stack: NODE_ENV !== "production" ? err.stack : null,
+    stack: APP_NODE_ENV !== "production" ? err.stack : null,
   });
 };
 

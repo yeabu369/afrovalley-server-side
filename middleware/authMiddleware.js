@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 
-const { SECRET } = require("../constants/index");
+const { APP_SECRET } = require("../constants/index");
 
 const protect = asyncHandler(async (req, res, next) => {
   let token;
@@ -14,7 +14,7 @@ const protect = asyncHandler(async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
 
     /**@verify_token */
-    const decodedToken = jwt.verify(token, SECRET);
+    const decodedToken = jwt.verify(token, APP_SECRET);
     req.userData = decodedToken;
     next();
   } else {

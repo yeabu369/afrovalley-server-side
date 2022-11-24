@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const { MONGO_URI } = require("../constants/index");
+const { APP_MONGO_URI } = require("../constants/index");
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(MONGO_URI);
+    const conn = await mongoose.connect(APP_MONGO_URI);
     console.log(
       `MongoDB Connected to ${conn.connection.host}`.magenta.underline
     );

@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
-const { SECRET } = require("../constants/index");
+const { APP_SECRET } = require("../constants/index");
 const jwt = require("jsonwebtoken");
 
 /**@import @User model */
@@ -246,7 +246,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 /**@generate JWT*/
 const generateToken = (id) => {
-  return jwt.sign({ id }, SECRET, {
+  return jwt.sign({ id }, APP_SECRET, {
     expiresIn: "30d",
   });
 };
