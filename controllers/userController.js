@@ -247,7 +247,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 /**@generate JWT*/
 const generateToken = (id) => {
-  return jwt.sign({ id }, SECRET, {
+  return jwt.sign({ id }, "thisisthesecretforjwt", {
     expiresIn: "30d",
   });
 };
