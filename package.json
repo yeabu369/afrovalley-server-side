@@ -1,5 +1,5 @@
 {
-  "name": "test-project-server",
+  "name": "employee-managment-server",
   "version": "1.0.0",
   "description": "This is a backend REST API using nodeJs, expressJs and mongoDb and mongoose for text project",
   "main": "server.js",
