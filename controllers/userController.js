@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 // const { SECRET } = require("../constants/index");
 const jwt = require("jsonwebtoken");
 
-const SECRET = "THISISSECRET";
 /**@import @User model */
 const User = require("../models/Users");
 
