@@ -15,31 +15,9 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: false,
     },
-    dateOfBirth: {
-      type: Date,
-      required: true,
-    },
-    gender: {
-      type: String,
-      required: true,
-    },
-    salary: {
-      type: Number,
-      required: true,
-    },
     isDeleted: {
       type: Boolean,
       default: false,
-    },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
-    updatedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: false,
-      ref: "User",
     },
   },
   {

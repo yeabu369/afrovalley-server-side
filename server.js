@@ -20,8 +20,13 @@ const corsOptions = {
   optionSuccessStatus: 200,
 };
 
-/**@user_route */
-app.use("/api/v1/user", cors(corsOptions), require("./routes/userRoute"));
+/**@all_routs */
+app.use("/api/v1/admin", cors(corsOptions), require("./routes/userRoute"));
+app.use(
+  "/api/v1/employee",
+  cors(corsOptions),
+  require("./routes/employeeRoute")
+);
 
 /**@error_handler */
 app.use(errorHandler);
