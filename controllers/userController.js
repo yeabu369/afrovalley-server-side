@@ -20,7 +20,6 @@ const signUp = asyncHandler(async (req, res) => {
   const userExist = await User.findOne({ email });
   if (userExist) {
     res.status(409).json({
-      status: 409,
       success: false,
       message: "User already exists",
     });
@@ -49,7 +48,6 @@ const signUp = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400).json({
-      status: 400,
       success: false,
       message: "Invalid user data",
     });
@@ -79,7 +77,6 @@ const login = asyncHandler(async (req, res) => {
   };
   if (user && (await bcrypt.compare(password, user.password))) {
     res.status(200).json({
-      status: 200,
       success: true,
       data: userInfo,
       accessToken: generateToken(user._id),
@@ -91,7 +88,6 @@ const login = asyncHandler(async (req, res) => {
   }
   if (!checkPassword) {
     return res.status(401).json({
-      status: 401,
       success: false,
       message: "Incorrect password.",
     });
@@ -131,12 +127,9 @@ const getUsers = asyncHandler(async (req, res) => {
   });
 
   res.status(200).json({
-    status: 200,
+    success: true,
     data: users,
     total,
-    success: true,
-    page: page + 1,
-    limit,
   });
 });
 
@@ -172,13 +165,14 @@ const updateUser = asyncHandler(async (req, res) => {
     updatedBy: req.userData.id,
   };
 
-  const updatedUser = await User.findByIdAndUpdate(id, updateData);
+  const updatedUser = await User.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
   if (updatedUser) {
-    const newData = await User.findById({ _id: id });
     res.status(201).json({
       success: true,
       message: "User updated successfully",
-      data: newData,
+      data: updatedUser,
     });
   } else {
     res.status(400).json({
