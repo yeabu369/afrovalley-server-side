@@ -11,10 +11,6 @@ const EmployeeSchema = mongoose.Schema(
       required: false,
       unique: true,
     },
-    password: {
-      type: String,
-      required: false,
-    },
     dateOfBirth: {
       type: Date,
       required: true,

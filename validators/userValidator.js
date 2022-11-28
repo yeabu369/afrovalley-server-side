@@ -13,20 +13,13 @@ const password = body("password")
   .withMessage("Please enter a password a minimum of 8 characters.");
 
 const dateOfBirth = body("dateOfBirth")
-  .isDate()
+  .custom((date) => new Date(Date.parse(date)))
   .withMessage("Date of birth is required.");
 const gender = body("gender").isString().withMessage("Gender is required.");
 const salary = body("salary").isNumeric().withMessage("Salary is required.");
 
 /**@create_employee validation */
-const CreateEmployeeValidations = [
-  name,
-  email,
-  password,
-  dateOfBirth,
-  gender,
-  salary,
-];
+const CreateEmployeeValidations = [name, email, dateOfBirth, gender, salary];
 
 /**@signup validation */
 const SignUpValidations = [name, email, password];

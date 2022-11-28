@@ -1,7 +1,4 @@
 const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcryptjs");
-const { SECRET } = require("../constants/index");
-const jwt = require("jsonwebtoken");
 
 /**@import @Employee model */
 const Employee = require("../models/Employees");
@@ -14,7 +11,6 @@ const Employee = require("../models/Employees");
  */
 const createEmployee = asyncHandler(async (req, res) => {
   const { name, email, password, dateOfBirth, salary, gender } = req.body;
-  console.log(req.employeeData);
 
   /**@check if employee exists*/
   const employeeExist = await Employee.findOne({ email });
@@ -23,34 +19,29 @@ const createEmployee = asyncHandler(async (req, res) => {
       success: false,
       message: "Employee already exists",
     });
-  }
-
-  /**@hash password*/
-  const salt = await bcrypt.genSalt(10);
-  const hashPassword = await bcrypt.hash(password, salt);
-
-  /**@create employee*/
-  const employee = await Employee.create({
-    name,
-    email,
-    password: hashPassword,
-    dateOfBirth,
-    salary,
-    gender,
-    createdBy: req.userData.id,
-  });
-
-  if (employee) {
-    res.status(201).json({
-      success: true,
-      message: "Employee created successfully",
-      data: employee,
-    });
   } else {
-    res.status(400).json({
-      success: false,
-      message: "Invalid employee data",
+    /**@create employee*/
+    const employee = await Employee.create({
+      name,
+      email,
+      dateOfBirth,
+      salary,
+      gender,
+      createdBy: req.userData.id,
     });
+
+    if (employee) {
+      res.status(201).json({
+        success: true,
+        message: "Employee created successfully",
+        data: employee,
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        message: "Invalid employee data",
+      });
+    }
   }
 });
 
@@ -94,23 +85,11 @@ const getEmployees = asyncHandler(async (req, res) => {
  */
 const updateEmployee = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const employee = await Employee.findById({ _id: id });
-  const condition = (await employee.isDeleted) === true;
-  if (condition) {
-    res.status(400);
-    throw new Error("Employee not found");
-  }
-  const { name, email, password, dateOfBirth, salary, createdBy, gender } =
-    req.body;
-
-  /**@hash password if employee changes his password*/
-  const salt = await bcrypt.genSalt(10);
-  const hashPassword = password && (await bcrypt.hash(password, salt));
+  const { name, email, dateOfBirth, salary, createdBy, gender } = req.body;
 
   const updateData = {
     name,
     email,
-    password: hashPassword,
     dateOfBirth,
     salary,
     createdBy,
@@ -142,18 +121,9 @@ const updateEmployee = asyncHandler(async (req, res) => {
  * @type PATCH
  */
 const deleteEmployee = asyncHandler(async (req, res) => {
-  const id = req.params.id;
   const isDeleted = {
     isDeleted: true,
   };
-
-  const employee = await Employee.findById({ _id: id });
-  const condition = (await employee.isDeleted) === true;
-
-  if (condition) {
-    req.status(400);
-    throw new Error("Employee not found");
-  }
 
   const deletedEmployee = await Employee.findByIdAndUpdate(
     req.params.id,

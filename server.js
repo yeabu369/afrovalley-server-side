@@ -15,8 +15,7 @@ app.use(express.urlencoded({ extended: false }));
 /**@across_origin_service CORS  */
 const corsOptions = {
   origin: "*",
-  //access-control-allow-credentials:true else false
-  credentials: false,
+  credentials: false, //access-control-allow-credentials:true else false
   optionSuccessStatus: 200,
 };
 
