@@ -10,38 +10,42 @@ const Employee = require("../models/Employees");
  * @type POST
  */
 const createEmployee = asyncHandler(async (req, res) => {
-  const { name, email, password, dateOfBirth, salary, gender } = req.body;
+  const { name, email, dateOfBirth, salary, gender } = req.body;
 
-  /**@check if employee exists*/
-  const employeeExist = await Employee.findOne({ email });
-  if (employeeExist) {
-    res.status(409).json({
-      success: false,
-      message: "Employee already exists",
-    });
-  } else {
-    /**@create employee*/
-    const employee = await Employee.create({
-      name,
-      email,
-      dateOfBirth,
-      salary,
-      gender,
-      createdBy: req.userData.id,
-    });
-
-    if (employee) {
-      res.status(201).json({
-        success: true,
-        message: "Employee created successfully",
-        data: employee,
+  try {
+    /**@check if employee exists*/
+    const employeeExist = await Employee.findOne({ email });
+    if (employeeExist) {
+      res.status(409).json({
+        success: false,
+        message: "Employee already exists",
       });
     } else {
-      res.status(400).json({
-        success: false,
-        message: "Invalid employee data",
+      /**@create employee*/
+      const employee = await Employee.create({
+        name,
+        email,
+        dateOfBirth,
+        salary,
+        gender,
+        createdBy: req.userData.id,
       });
+
+      if (employee) {
+        res.status(201).json({
+          success: true,
+          message: "Employee created successfully",
+          data: employee,
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Invalid employee data",
+        });
+      }
     }
+  } catch (e) {
+    throw new Error(e);
   }
 });
 
@@ -57,24 +61,28 @@ const getEmployees = asyncHandler(async (req, res) => {
   const limit = parseInt(req.query.limit) || 5;
   const search = req.query.search || "";
 
-  const employees = await Employee.find({
-    name: { $regex: search, $options: "i" },
-    isDeleted: false,
-  })
-    .skip(page * limit)
-    .limit(limit);
+  try {
+    const employees = await Employee.find({
+      name: { $regex: search, $options: "i" },
+      isDeleted: false,
+    })
+      .skip(page * limit)
+      .limit(limit);
 
-  /**@counter for total number of @documents */
-  const total = await Employee.countDocuments({
-    name: { $regex: search, $options: "i" },
-    isDeleted: false,
-  });
+    /**@counter for total number of @documents */
+    const total = await Employee.countDocuments({
+      name: { $regex: search, $options: "i" },
+      isDeleted: false,
+    });
 
-  res.status(200).json({
-    success: true,
-    data: employees,
-    total,
-  });
+    res.status(200).json({
+      success: true,
+      data: employees,
+      total,
+    });
+  } catch (e) {
+    throw new Error(e);
+  }
 });
 
 /**
@@ -87,30 +95,41 @@ const updateEmployee = asyncHandler(async (req, res) => {
   const id = req.params.id;
   const { name, email, dateOfBirth, salary, createdBy, gender } = req.body;
 
-  const updateData = {
-    name,
-    email,
-    dateOfBirth,
-    salary,
-    createdBy,
-    gender,
-    updatedBy: req.userData.id,
-  };
+  try {
+    const employee = await Employee.findById({ _id: id });
+    const employeeNotExist = (await employee.isDeleted) === true;
+    if (employeeNotExist) {
+      res.status(400);
+      throw new Error("Employee not found");
+    } else {
+      const updateData = {
+        name,
+        email,
+        dateOfBirth,
+        salary,
+        createdBy,
+        gender,
+        updatedBy: req.userData.id,
+      };
 
-  const updatedEmployee = await Employee.findByIdAndUpdate(id, updateData, {
-    new: true,
-  });
-  if (updatedEmployee) {
-    res.status(201).json({
-      success: true,
-      message: "Employee updated successfully",
-      data: updatedEmployee,
-    });
-  } else {
-    res.status(400).json({
-      success: false,
-      message: "Invalid employee data",
-    });
+      const updatedEmployee = await Employee.findByIdAndUpdate(id, updateData, {
+        new: true,
+      });
+      if (updatedEmployee) {
+        res.status(201).json({
+          success: true,
+          message: "Employee updated successfully",
+          data: updatedEmployee,
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Invalid employee data",
+        });
+      }
+    }
+  } catch (e) {
+    throw new Error(e);
   }
 });
 
@@ -121,53 +140,66 @@ const updateEmployee = asyncHandler(async (req, res) => {
  * @type PATCH
  */
 const deleteEmployee = asyncHandler(async (req, res) => {
-  const isDeleted = {
-    isDeleted: true,
-  };
+  const id = req.params.id;
+  try {
+    const isDeleted = {
+      isDeleted: true,
+    };
 
-  const deletedEmployee = await Employee.findByIdAndUpdate(
-    req.params.id,
-    isDeleted
-  );
-  if (deletedEmployee) {
-    res.status(201).json({
-      success: true,
-      message: "Employee deleted successfully",
-    });
-  } else {
-    res.status(400).json({
-      success: false,
-      message: "Invalid employee data",
-    });
+    const employee = await Employee.findById({ _id: id });
+    const employeeNotExist = (await employee.isDeleted) === true;
+    if (employeeNotExist) {
+      res.status(400);
+      throw new Error("Employee not found");
+    } else {
+      const deletedEmployee = await Employee.findByIdAndUpdate(id, isDeleted);
+      if (deletedEmployee) {
+        res.status(201).json({
+          success: true,
+          message: "Employee deleted successfully",
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: "Invalid employee data",
+        });
+      }
+    }
+  } catch (e) {
+    throw new Error(e);
   }
 });
 
 /**@real deletion or employee from the database  */
 // const deleteEmployee = asyncHandler(async (req, res) => {
 //   const id = req.params.id;
-//   const isDeleted = {
-//     isDeleted: true,
-//   };
+//   try {
+//     const isDeleted = {
+//       isDeleted: true,
+//     };
 
-//   const employee = await Employee.findById({ _id: id });
-//   const condition = (await employee.isDeleted) === true;
+//     const employee = await Employee.findById({ _id: id });
+//     const condition = (await employee.isDeleted) === true;
 
-//   if (condition) {
-//     req.status(400);
-//     throw new Error("Employee not found");
-//   }
+//     if (condition) {
+//       req.status(400);
+//       throw new Error("Employee not found");
+//     }
 
-//   const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
-//   if (deletedEmployee) {
-//     res.status(201).json({
-//       success: true,
-//       message: "Employee deleted successfully",
-//     });
-//   } else {
-//     res.status(400).json({
-//       success: false,
-//       message: "Invalid employee data",
-//     });
+//     const deletedEmployee = await Employee.findByIdAndDelete(req.params.id);
+//     if (deletedEmployee) {
+//       res.status(201).json({
+//         success: true,
+//         message: "Employee deleted successfully",
+//       });
+//     } else {
+//       res.status(400).json({
+//         success: false,
+//         message: "Invalid employee data",
+//       });
+//     }
+//   } catch (e) {
+//        throw new Error(e);
 //   }
 // });
 

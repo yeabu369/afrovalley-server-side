@@ -18,15 +18,15 @@ const {
 
 /**@all employee routes */
 router
-  .route("/create")
+  .route("/")
   .post(
     protect,
     CreateEmployeeValidations,
     validatorMiddleware,
     createEmployee
   );
-router.route("/").get(getEmployees);
-router.route("/update/:id").patch(protect, updateEmployee);
-router.route("/delete/:id").delete(protect, deleteEmployee);
+router.route("/").get(protect, getEmployees);
+router.route("/:id").patch(protect, updateEmployee);
+router.route("/:id").delete(protect, deleteEmployee);
 
 module.exports = router;
