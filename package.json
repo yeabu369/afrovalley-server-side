@@ -4,7 +4,7 @@
   "description": "This is a backend REST API using nodeJs, expressJs and mongoDb and mongoose for text project",
   "main": "server.js",
   "engines": {
-    "node": "14.x"
+    "node": "18.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
