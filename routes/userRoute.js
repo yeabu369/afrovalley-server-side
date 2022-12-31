@@ -12,10 +12,21 @@ const {
 const { protect } = require("../middleware/authMiddleware");
 
 /**@import user CRUD functions from user controller */
-const { signUp, login } = require("../controllers/userController");
+const {
+  signUp,
+  login,
+  getUserData,
+  getUsers,
+  updateUser,
+  deleteUser,
+} = require("../controllers/userController");
 
 /**@all user routes */
 router.route("/signup").post(SignUpValidations, validatorMiddleware, signUp);
 router.route("/login").post(LoginValidations, validatorMiddleware, login);
+router.route("/userData").get(protect, getUserData);
+router.route("/").get(protect, getUsers);
+router.route("/").patch(protect, updateUser);
+router.route("/").delete(protect, deleteUser);
 
 module.exports = router;

@@ -11,6 +11,8 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+// app.use(express.static("public/uploads"));
+// { limit: "2gb" }
 
 /**@across_origin_service CORS  */
 const corsOptions = {
@@ -20,12 +22,13 @@ const corsOptions = {
 };
 
 /**@all_routs */
-app.use("/api/v1/admin", cors(corsOptions), require("./routes/userRoute"));
+app.use("/api/v1/users", cors(corsOptions), require("./routes/userRoute"));
 app.use(
-  "/api/v1/employee",
+  "/api/v1/crop-type",
   cors(corsOptions),
-  require("./routes/employeeRoute")
+  require("./routes/cropTypeRoute")
 );
+app.use("/api/v1/crops", cors(corsOptions), require("./routes/cropRoute"));
 
 /**@error_handler */
 app.use(errorHandler);
